@@ -2,25 +2,28 @@
 #include <set>
 #include "HuffmanTree.h"
 #include "Heap.h"
-
+#include <iomanip>
+#include <map>
+#include <fstream>
 using namespace std;
 
 int main()
 {
     HuffmanTree *huf = new HuffmanTree();
     Heap<HuffmanTree*, HuffmanTree::comp> hufHeap;
-    int frequencies[256] = {0};
+    int frequencies[128] = {0};
     set<char> charSet;
+    string str ="";
 
     string input ="Four score and seven years ago our fathers brought forth"
         " on this continent, a new nation, conceived in Liberty, and "
-        "dedicated to the proposition that all men are created equal."
+        "dedicated to the proposition that all men are created equal. "
         "Now we are engaged in a great civil war, testing whether that "
         "nation, or any nation so conceived and so dedicated, can long endure. "
         "We are met on a great battle-field of that war. We have come to "
         "dedicate a portion of that field, as a final resting place for "
         "those who here gave their lives that that nation might live. It is"
-        " altogether fitting and proper that we should do this."
+        " altogether fitting and proper that we should do this. "
         "But, in a larger sense, we cannot dedicate -- we cannot consecrate"
         " -- we cannot hallow -- this ground. The brave men, living and "
         "dead, who struggled here, have consecrated it, far above our poor "
@@ -35,6 +38,8 @@ int main()
         "shall not have died in vain -- that this nation, under God, shall "
         "have a new birth of freedom -- and that government of the people, "
         "by the people, for the people, shall not perish from the earth.";
+
+    int uncompressed = input.length() * 8;
 
     for(char c: input){
         charSet.insert(c);
@@ -63,9 +68,40 @@ int main()
 
     huf = hufHeap.removeMin();
 
-//    huf->printTree(huf->getRoot());
+    huf->printTree(huf->getRoot());
 
-    huf->inorderTraversal();
+    unsigned char test = 'a';
+
+    int compressed = 0;
+    for(char c : charSet)
+    {
+        huf->getHuffCode(huf->getRoot(), c, "", str);
+        compressed += (str.length() * frequencies[c]);
+        cout << '\'' <<  c << '\'' << ' ' << ',' << ' ' << setw(3) << frequencies[c] << " - " << setw(13) << str << endl;
+    }
+
+    std::ostringstream out;
+
+    for(char c : input)
+    {
+        huf->getHuffCode(huf->getRoot(), c, "", str);
+        out << str.c_str();
+    }
+
+    // write encoded string to file
+    ofstream fout;
+    fout.open("output.txt");
+    fout << out.str();
+    fout.close();
+//    huf->inorderTraversal();
+
+    cout << huf->decode("output.txt");
+
+    float ratio = (compressed / float(uncompressed)) * 100;
+
+    cout << "\nuncompressed bits: " << uncompressed;
+    cout << "\ncompressed bits: " << compressed;
+    cout << "\ncompression ratio: " << ratio << '%';
 
 
 

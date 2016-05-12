@@ -1,10 +1,13 @@
-
 #ifndef CS1D_ASSIGNMENT5_BINARYTREE_BINARYTREE_H
 #define CS1D_ASSIGNMENT5_BINARYTREE_BINARYTREE_H
 
 #include <stddef.h>
 #include <iostream>
 #include <iomanip>
+#include <deque>
+#include <math.h>
+#include <sstream>
+#include <fstream>
 
 class HuffmanTree
 {
@@ -18,7 +21,8 @@ private:
         Node *right;
 
         Node(void)
-            :freq(0), c('\0'), left(NULL), right(NULL) {}
+            : freq(0), c('\0'), left(NULL), right(NULL)
+        { }
     };
 
 public:
@@ -45,11 +49,15 @@ public:
 
     unsigned int getFreq() const;
 
+    std::string decode(std::string file) const;
+
 //    int treeNodeCount() const;
 //
 //    int treeLeavesCount() const;
 
-    Node* getRoot() const;
+    Node *getRoot() const;
+
+    void getHuffCode(Node *node, unsigned char c, std::string str, std::string &s) const;
 
     //Mutators
     void burnTree();
@@ -73,7 +81,7 @@ public:
     /**
 * Helper function for printing the binary tree to console
 */
-    void padding (char ch, int n)
+    void padding(char ch, int n)
     {
         int i;
         for (i = 0; i < n; i++)
@@ -87,14 +95,16 @@ public:
     void printTree(Node *root, int level = 0)
     {
         int i;
-        if ( root == NULL ) {
-            padding ( '\t', level );
-            puts ( "-" );
+        if (root == NULL)
+        {
+            padding('\t', level);
+            puts("-");
         }
-        else {
+        else
+        {
             printTree(root->right, level + 1);
-            padding ( '\t', level );
-            printf ( "%c, %d\n", root->c, root->freq );
+            padding('\t', level);
+            printf("%c, %d\n", root->c, root->freq);
 //            if(root->c == '\0'){ padding ('\t', level); puts ( "-" ); }
             printTree(root->left, level + 1);
         }
@@ -129,37 +139,37 @@ private:
 
 bool HuffmanTree::isEmpty() const
 {
-  return (root == NULL);
+    return (root == NULL);
 }
 
 
 HuffmanTree::HuffmanTree()
 {
-  root = new Node;
+    root = new Node;
 }
 
 
 void HuffmanTree::inorderTraversal() const
 {
-  inorder(root);
+    inorder(root);
 }
 
 
 void HuffmanTree::preorderTraversal() const
 {
-  preorder(root);
+    preorder(root);
 }
 
 
 void HuffmanTree::postorderTraversal() const
 {
-  postorder(root);
+    postorder(root);
 }
 
 
 int HuffmanTree::treeHeight() const
 {
-  return height(root);
+    return height(root);
 }
 
 
@@ -177,122 +187,122 @@ int HuffmanTree::treeHeight() const
 
 void HuffmanTree::inorder(Node *p) const
 {
-  if (p != NULL)
-  {
-    inorder(p->left);
-    std::cout << p->c << '(' << p->freq << ')' << " ";
-    inorder(p->right);
-  }
+    if (p != NULL)
+    {
+        inorder(p->left);
+        std::cout << p->c << '(' << p->freq << ')' << " ";
+        inorder(p->right);
+    }
 }
 
 
 void HuffmanTree::preorder(Node *p) const
 {
-  if (p != NULL)
-  {
-    std::cout << p->c << '(' << p->freq << ')' << " ";
-    preorder(p->left);
-    preorder(p->right);
-  }
+    if (p != NULL)
+    {
+        std::cout << p->c << '(' << p->freq << ')' << " ";
+        preorder(p->left);
+        preorder(p->right);
+    }
 }
 
 
 void HuffmanTree::postorder(Node *p) const
 {
-  if (p != NULL)
-  {
-    postorder(p->left);
-    postorder(p->right);
-    std::cout << p->c << '(' << p->freq << ')' << " ";
-  }
+    if (p != NULL)
+    {
+        postorder(p->left);
+        postorder(p->right);
+        std::cout << p->c << '(' << p->freq << ')' << " ";
+    }
 }
 
 int HuffmanTree::height(Node *p) const
 {
-  if (p == NULL)
-    return 0;
-  else
-    return 1 + max(height(p->left), height(p->right));
+    if (p == NULL)
+        return 0;
+    else
+        return 1 + max(height(p->left), height(p->right));
 }
 
 
 int HuffmanTree::max(int x, int y) const
 {
-  if (x >= y)
-    return x;
-  else
-    return y;
+    if (x >= y)
+        return x;
+    else
+        return y;
 }
 
 
 void HuffmanTree::copyTree(Node *&copiedTreeRoot,
-                             Node *otherTreeRoot)
+                           Node *otherTreeRoot)
 {
-  if (otherTreeRoot == NULL)
-    copiedTreeRoot = NULL;
-  else
-  {
-    copiedTreeRoot = new Node;
-    copiedTreeRoot->freq = otherTreeRoot->freq;
-    copiedTreeRoot->c = otherTreeRoot->c;
-    copyTree(copiedTreeRoot->left, otherTreeRoot->left);
-    copyTree(copiedTreeRoot->right, otherTreeRoot->right);
-  }
+    if (otherTreeRoot == NULL)
+        copiedTreeRoot = NULL;
+    else
+    {
+        copiedTreeRoot = new Node;
+        copiedTreeRoot->freq = otherTreeRoot->freq;
+        copiedTreeRoot->c = otherTreeRoot->c;
+        copyTree(copiedTreeRoot->left, otherTreeRoot->left);
+        copyTree(copiedTreeRoot->right, otherTreeRoot->right);
+    }
 }
 
 
 void HuffmanTree::burn(Node *&p)
 {
-  if (p != NULL)
-  {
-    burn(p->left);
-    burn(p->right);
-    delete p;
-    p = NULL;
-  }
+    if (p != NULL)
+    {
+        burn(p->left);
+        burn(p->right);
+        delete p;
+        p = NULL;
+    }
 }
 
 
 void HuffmanTree::burnTree()
 {
-  burn(root);
+    burn(root);
 }
 
 
 HuffmanTree::HuffmanTree(const HuffmanTree &otherTree)
 {
-  if (otherTree.root == NULL)
-    root = NULL;
-  else
-    copyTree(root, otherTree.root);
+    if (otherTree.root == NULL)
+        root = NULL;
+    else
+        copyTree(root, otherTree.root);
 }
 
 
 HuffmanTree::~HuffmanTree()
 {
-  burn(root);
+    burn(root);
 }
 
 
 const HuffmanTree &HuffmanTree::operator=(
     const HuffmanTree &otherTree)
 {
-  if (this != &otherTree)
-  {
-    if (root != NULL)
+    if (this != &otherTree)
     {
-      burn(root);
-      if (otherTree.root == NULL)
-      {
-        root = NULL;
-      }
-      else
-      {
-        copyTree(root, otherTree.root);
-      }
-      return *this;
+        if (root != NULL)
+        {
+            burn(root);
+            if (otherTree.root == NULL)
+            {
+                root = NULL;
+            }
+            else
+            {
+                copyTree(root, otherTree.root);
+            }
+            return *this;
+        }
     }
-  }
 }
 
 void HuffmanTree::setFreq(unsigned int freq)
@@ -329,6 +339,64 @@ unsigned int HuffmanTree::getFreq() const
 {
     return root->freq;
 }
+
+void HuffmanTree::getHuffCode(Node *node, unsigned char c, std::string str, std::string &s) const
+{
+    if (node != NULL)
+    {
+        if (node->c != '\0' && node->c == c)
+        {
+            s = str;
+        }
+        else
+        {
+            if (node->left != NULL)
+            {
+                getHuffCode(node->left, c, str + "0", s);
+            }
+            if (node->right != NULL)
+            {
+                getHuffCode(node->right, c, str + "1", s);
+            }
+        }
+    }
+}
+
+std::string HuffmanTree::decode(std::string file) const
+{
+    std::ostringstream out;
+    std::ifstream fin;
+    fin.open(file.c_str());
+    std::string code;
+    fin >> code;
+
+    Node *node = root;
+
+
+    for (char c : code)
+    {
+        if (node->left == NULL && node->right == NULL)
+        {
+            out << node->c;
+            node = root;
+        }
+        if (c == '0')
+        {
+            node = node->left;
+        }
+        else if (c == '1')
+        {
+            node = node->right;
+        }
+    }
+
+    out << node->c;
+
+
+    return out.str().c_str();
+}
+
+
 
 
 
