@@ -1,3 +1,9 @@
+/**************************************************************************
+ * AUTHOR: Jesse Mazzella
+ * CLASS : CS1D
+ * DATE  : 05-16-2016
+ * ASSIGN: Huffman Coding Extra Credit
+ *************************************************************************/
 #include <iostream>
 #include <set>
 #include "HuffmanTree.h"
@@ -5,17 +11,24 @@
 #include <iomanip>
 #include <map>
 #include <fstream>
+#include <queue>
+#include <list>
 using namespace std;
-
+/**************************************************************************
+ * EXTRA CREDIT - HUFFMAN CODING
+ * ------------------------------------------------------------------------
+ *
+ *************************************************************************/
 int main()
 {
-    HuffmanTree *huf = new HuffmanTree();
-    Heap<HuffmanTree*, HuffmanTree::comp> hufHeap;
-    int frequencies[128] = {0};
-    set<char> charSet;
-    string str ="";
+    HuffmanTree *tree; ///< a binary tree used for huffman coding
+    Heap<HuffmanTree *, HuffmanTree::comp> hufHeap; // A minHeap sorting by frequency
+    int frequencies[128] = {0}; // 128 size int array.. one for each ASCII value
+    set<char> charSet; // A set of chars to find how many unique characters in input
+    int compressed = 0; // initialize
+    string str = ""; // initialize
 
-    string input ="Four score and seven years ago our fathers brought forth"
+    string input = "Four score and seven years ago our fathers brought forth"
         " on this continent, a new nation, conceived in Liberty, and "
         "dedicated to the proposition that all men are created equal. "
         "Now we are engaged in a great civil war, testing whether that "
@@ -39,52 +52,75 @@ int main()
         "have a new birth of freedom -- and that government of the people, "
         "by the people, for the people, shall not perish from the earth.";
 
-    int uncompressed = input.length() * 8;
+    int uncompressed = input.length() * 8; // Calculate amount of bits uncompressed
+                                           // 1 character = 8 bits
 
-    for(char c: input){
+    // Insert all characters in the input string into a set, and
+    // increment the frequency value for each.
+    for (char c: input)
+    {
         charSet.insert(c);
         frequencies[c]++;
     }
 
-    for(char c : charSet){
-        huf = new HuffmanTree();
-        huf->setChar(c);
-        huf->setFreq(frequencies[c]);
-        hufHeap.insert(huf);
+    // For every character in the set, create a treeNode containing
+    // that character and its frequency, and add it to a minHeap.
+    for (char c : charSet)
+    {
+        tree = new HuffmanTree();
+        tree->setChar(c);
+        tree->setFreq(frequencies[c]);
+        hufHeap.insert(tree);
     }
 
+    // Left child
     HuffmanTree *left;
+    // Right child
     HuffmanTree *right;
-    while(hufHeap.size() > 1)
+
+    // Build a huffman tree
+    // Remove top two from the heap and create a new node with
+    // frequency (left.freq + right.freq). Then make the lesser the left
+    // child and the other the right child. Add it back into the heap
+    // until heap size == 1.
+    while (hufHeap.size() > 1)
     {
-        left  = hufHeap.removeMin();
+        left = hufHeap.removeMin();
         right = hufHeap.removeMin();
-        huf = new HuffmanTree();
-        huf->setLeft(left->getRoot());
-        huf->setRight(right->getRoot());
-        huf->setFreq(left->getFreq() + right->getFreq());
-        hufHeap.insert(huf);
+        tree = new HuffmanTree();
+        tree->setLeft(left->getRoot());
+        tree->setRight(right->getRoot());
+        tree->setFreq(left->getFreq() + right->getFreq());
+        hufHeap.insert(tree);
     }
 
-    huf = hufHeap.removeMin();
+    // Retrieve the newly constructed huffman tree.
+    tree = hufHeap.removeMin();
 
-    huf->printTree(huf->getRoot());
+    // Print the tree
+    tree->printTree(tree->getRoot());
 
-    unsigned char test = 'a';
 
-    int compressed = 0;
-    for(char c : charSet)
+    // For every character in the set, find it in the huffman tree.
+    // Determine the Huffman Code for each character.
+    cout << "character" << setw(15) << "frequency" << setw(15) << "huffman code" << endl;
+    for (char c : charSet)
     {
-        huf->getHuffCode(huf->getRoot(), c, "", str);
+        tree->getHuffCode(tree->getRoot(), c, "", str);
+        // increment number of compressed bits
         compressed += (str.length() * frequencies[c]);
-        cout << '\'' <<  c << '\'' << ' ' << ',' << ' ' << setw(3) << frequencies[c] << " - " << setw(13) << str << endl;
+//        printf("%10c - %10d\n", c, frequencies[c]);
+        cout << '\'' << c << '\'' << ' ' << ',' << ' ' << setw(15) <<
+        frequencies[c] << " - " << setw(15) << str << endl;
     }
 
-    std::ostringstream out;
+    std::ostringstream out; // Create output stream
 
-    for(char c : input)
+    // For every character in the input string, translate it into
+    // a string of huffman code and append to the output stream.
+    for (char c : input)
     {
-        huf->getHuffCode(huf->getRoot(), c, "", str);
+        tree->getHuffCode(tree->getRoot(), c, "", str);
         out << str.c_str();
     }
 
@@ -95,15 +131,20 @@ int main()
     fout.close();
 //    huf->inorderTraversal();
 
-    cout << huf->decode("output.txt");
+    // Decode the Huffman code and output it.
+    cout << endl;
+    cout << "DECODED HUFFMAN CODE:" << endl;
+    cout << tree->decode("output.txt");
 
+    // Calculate compression ratio.
     float ratio = (compressed / float(uncompressed)) * 100;
 
+    cout << std::endl;
     cout << "\nuncompressed bits: " << uncompressed;
     cout << "\ncompressed bits: " << compressed;
     cout << "\ncompression ratio: " << ratio << '%';
 
 
-
     return 0;
 }
+
