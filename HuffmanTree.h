@@ -17,57 +17,79 @@ class HuffmanTree
 {
 public:
 
+    /**
+     * A HuffmanTree Node containing a frequency value and character.
+     */
     struct Node
     {
-        unsigned int freq;
-        unsigned char c;
-        Node *left;
-        Node *right;
+        unsigned int freq; //< frequency value
+        unsigned char c;   //< character
+        Node *left;        //< left child
+        Node *right;       //< right child
 
-        Node(void)
-            : freq(0), c('\0'), left(NULL), right(NULL)
-        { }
+        /// Default Constructor
+        Node() : freq(0), c('\0'), left(NULL), right(NULL) {}
     };
 
-
+    /// Default constructor
     HuffmanTree();
 
+    /// Destructor
     ~HuffmanTree();
 
+    /// Equate two HuffmanTrees
     const HuffmanTree &operator=(const HuffmanTree &);
 
+    /// Copy Constructor
     HuffmanTree(const HuffmanTree &otherTree);
 
     //Accessors
+
+    /// Check if the tree is empty
     bool isEmpty() const;
 
+    /// Perform an inorder traversal from the root
     void inorderTraversal() const;
 
+    /// Perform a preorder traversal from the root
     void preorderTraversal() const;
 
+    /// Perform a postorder traversal from the root
     void postorderTraversal() const;
 
+    /// Retrieve the height of the tree
     int treeHeight() const;
 
+    /// Get the character value stored at the root
     unsigned char getChar() const;
 
+    /// Get the frequency value stored at the root
     unsigned int getFreq() const;
 
+    /// Decode a Huffman Code using this tree
     std::string decode(std::string file) const;
 
+    /// Retrieve a pointer to the root of the tree
     Node *getRoot() const;
 
+    /// Get the Huffman Code for a particular character stored in the tree
     void getHuffCode(Node *node, unsigned char c, std::string str, std::string &s) const;
 
     //Mutators
+
+    /// Clear the tree
     void burnTree();
 
+    /// Set the frequency value of the tree root
     void setFreq(unsigned int freq);
 
+    /// Set the character value of the tree root
     void setChar(unsigned char ch);
 
+    /// Set the left child of the root of the tree
     void setLeft(Node *node);
 
+    /// Set the right child of the root of the tree
     void setRight(Node *node);
 
     /// Comparator for comparing two Huffman Trees
@@ -79,26 +101,36 @@ public:
         }
     };
 
+    /// Helper function for printing the tree
     void padding(char ch, int n);
 
+    /// Print the tree (rotated 90 degrees)
     void printTree(Node *root, int level = 0);
 
 private:
 
+    /// Pointer to the root of the tree
     Node *root;
 
+    /// Copy one tree into another
     void copyTree(Node *&copiedTreeRoot, Node *otherTreeRoot);
 
+    /// Delete a node and its children
     void burn(Node *&p);
 
+    /// Perform an inorder traversal from a given Node
     void inorder(Node *p) const;
 
+    /// Perform a preorder traversal from a given Node
     void preorder(Node *p) const;
 
+    /// Perform a postorder traversal from a given Node
     void postorder(Node *p) const;
 
+    /// Retrieve the height from a given Node
     int height(Node *p) const;
 
+    /// Compare two values and return the greater of the two
     int max(int x, int y) const;
 
 };
@@ -510,7 +542,6 @@ void HuffmanTree::padding(char ch, int n)
  */
 void HuffmanTree::printTree(Node *root, int level)
 {
-    int i;
     if (root == NULL)
     {
         padding('\t', level);
@@ -528,7 +559,7 @@ void HuffmanTree::printTree(Node *root, int level)
         {
             printf("[%c](F:%d)\n", root->c, root->freq);
         }
-//            if(root->c == '\0'){ padding ('\t', level); puts ( "-" ); }
+
         printTree(root->left, level + 1);
     }
 }
