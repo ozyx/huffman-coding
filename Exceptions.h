@@ -10,10 +10,10 @@
 #include <string>
 
 /**
-* @class RuntimeException
-* A generic runtime exception class.
-* @author Jesse Mazzella
-*/
+ * @class RuntimeException
+ * A generic runtime exception class.
+ * @author Jesse Mazzella
+ */
 class RuntimeException
 {
 public:
@@ -26,10 +26,10 @@ public:
     { errorMsg = err; }
 
     /**
-    * @brief Return the error message to the client
-    * @author Jesse Mazzella
-    * @return The related error message as a string
-    */
+     * @brief Return the error message to the client
+     * @author Jesse Mazzella
+     * @return The related error message as a string
+     */
     std::string getMessage() const
     { return errorMsg; }
 
@@ -38,10 +38,10 @@ protected:
 };
 
 /**
-* @class IndexOutOfBounds
-* An exception class for IndexOutOfBounds errors
-* @author Jesse Mazzella
-*/
+ * @class IndexOutOfBounds
+ * An exception class for IndexOutOfBounds errors
+ * @author Jesse Mazzella
+ */
 class IndexOutOfBounds : public RuntimeException
 {
 public:
