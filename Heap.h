@@ -1,3 +1,9 @@
+/**************************************************************************
+ * AUTHOR: Jesse Mazzella
+ * CLASS : CS1D
+ * DATE  : 05-16-2016
+ * ASSIGN: Huffman Coding Extra Credit
+ *************************************************************************/
 #ifndef CS1D_ASSIGNMENT6_PRIORITYQUEUES_HEAP_H
 #define CS1D_ASSIGNMENT6_PRIORITYQUEUES_HEAP_H
 

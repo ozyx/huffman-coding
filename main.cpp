@@ -17,7 +17,24 @@ using namespace std;
 /**************************************************************************
  * EXTRA CREDIT - HUFFMAN CODING
  * ------------------------------------------------------------------------
+ *    This program demonstrates Huffman Coding by fully encoding the
+ *  Gettysburg address, storing the code in a text file, and then reading
+ *  and decoding the Huffman Code.
  *
+ *    All characters in the input string are first read into a set.
+ *  Simultaneously, an integer array is used to calculate the number of
+ *  occurrences of each character. Then, for each unique character in
+ *  the input string (each character stored in the Set), a HuffmanTree
+ *  Node is created with that character and its frequency value stored
+ *  at the root. Each of those trees is then inserted into a min-Heap
+ *  sorted by frequency. The HuffmanTree algorithm is then performed on
+ *  the Heap, generating a HuffmanTree with the most frequent characters
+ *  stored closer to the root and least frequenct characters stored
+ *  farthest from the root.
+ *
+ *   The input string is then translated into a string of HuffmanCodes
+ * and stored in a file. Afterwards, the file is read into a decoder
+ * and the HuffmanTree is used to decode the string of Huffman codes.
  *************************************************************************/
 int main()
 {
@@ -25,7 +42,8 @@ int main()
     Heap<HuffmanTree *, HuffmanTree::comp> hufHeap; // A minHeap sorting by frequency
     int frequencies[128] = {0}; // 128 size int array.. one for each ASCII value
     set<char> charSet; // A set of chars to find how many unique characters in input
-    int compressed = 0; // initialize
+    std::ostringstream out; // output stream
+    int compressed = 0; // initialize number of compressed bits to 0
     string str = ""; // initialize
 
     string input = "Four score and seven years ago our fathers brought forth"
@@ -109,12 +127,9 @@ int main()
         tree->getHuffCode(tree->getRoot(), c, "", str);
         // increment number of compressed bits
         compressed += (str.length() * frequencies[c]);
-//        printf("%10c - %10d\n", c, frequencies[c]);
         cout << '\'' << c << '\'' << ' ' << ',' << ' ' << setw(15) <<
         frequencies[c] << " - " << setw(15) << str << endl;
     }
-
-    std::ostringstream out; // Create output stream
 
     // For every character in the input string, translate it into
     // a string of huffman code and append to the output stream.
@@ -129,7 +144,6 @@ int main()
     fout.open("output.txt");
     fout << out.str();
     fout.close();
-//    huf->inorderTraversal();
 
     // Decode the Huffman code and output it.
     cout << endl;

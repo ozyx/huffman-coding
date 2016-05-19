@@ -1,3 +1,9 @@
+/**************************************************************************
+ * AUTHOR: Jesse Mazzella
+ * CLASS : CS1D
+ * DATE  : 05-16-2016
+ * ASSIGN: Huffman Coding Extra Credit
+ *************************************************************************/
 #ifndef CS1D_ASSIGNMENT5_BINARYTREE_BINARYTREE_H
 #define CS1D_ASSIGNMENT5_BINARYTREE_BINARYTREE_H
 

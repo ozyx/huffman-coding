@@ -1,8 +1,8 @@
 /**************************************************************************
- * AUTHOR   : Jesse Mazzella
- * CLASS    : CS1D
- * DATE     : 04-20-2016
- * ASSIGN 13: Breadth First Search
+ * AUTHOR: Jesse Mazzella
+ * CLASS : CS1D
+ * DATE  : 05-16-2016
+ * ASSIGN: Huffman Coding Extra Credit
  *************************************************************************/
 #ifndef CS1D_ASSIGNMENT4_CIRCULAR_VECTOR_EXCEPTIONS_H
 #define CS1D_ASSIGNMENT4_CIRCULAR_VECTOR_EXCEPTIONS_H
